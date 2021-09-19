@@ -72,7 +72,7 @@ const SplashScreen = ({ navigation }) => {
         speed={0.5}
         onAnimationFinish={() => {
           console.log('Animation Finished!')
-          navigation.replace('SignInStack');
+          navigation.replace('SignIn');
         }}
       />
     </View>

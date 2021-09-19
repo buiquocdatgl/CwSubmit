@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     View,
     Text,
@@ -14,78 +14,29 @@ import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import { AuthenticationContext } from "../../service/context";
 
 const SignInScreen = ({ navigation }) => {
 
-    const [infor, setInfor] = React.useState({
-        username: '',
-        password: '',
-        check_textInputChange: false,
-        secureTextEntry: true,
-        isValidUser: true,
-        isValidPassword: true,
-    });
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { signIn, error } = useContext(AuthenticationContext);
 
-
-    const textInputChange = (val) => {
-        if (val.trim().length >= 4) {
-            setInfor({
-                ...infor,
-                username: val,
-                check_textInputChange: true,
-                isValidUser: true,
-            });
-        } else {
-            setInfor({
-                ...infor,
-                username: val,
-                check_textInputChange: false,
-                isValidUser: false,
-            });
-        }
-    }
-
-    const handlePasswordChange = (val) => {
-        if (val.trim().length >= 8) {
-            setInfor({
-                ...infor,
-                password: val,
-                isValidPassword: true
-            });
-        } else {
-            setInfor({
-                ...infor,
-                password: val,
-                isValidPassword: false
-            });
-        }
-    }
-
-    const updateSecureTextEntry = () => {
-        setInfor({
-            ...infor,
-            secureTextEntry: !infor.secureTextEntry
-        });
-    }
-
-    // const handleValidUser = (val) => {
-    //     if (val.trim().length >= 4) {
-    //         setData({
-    //             ...data,
-    //             isValidUser: true
-    //         });
-    //     } else {
-    //         setData({
-    //             ...data,
-    //             isValidUser: false
-    //         });
+    // const signIn = async () => {
+    //     try {
+    //         const response = await firebase.auth().signInWithEmailAndPassword(email, password);
+    //         navigation.navigate('HomeScreen');
+    //     } catch (err) {
+    //         setError(err.message);
     //     }
+
     // }
 
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='#BF6B7B' barStyle="light-content" />
             <View style={styles.header}>
+
                 <Animatable.Image
                     animation="bounceIn"
                     duraton="1500"
@@ -94,12 +45,14 @@ const SignInScreen = ({ navigation }) => {
                     resizeMode="stretch"
                 />
             </View>
+
+
             <Animatable.View
                 animation="fadeInUpBig"
                 style={styles.footer}
             >
                 <Text style={styles.text_footer
-                   }>Username</Text>
+                }>Username</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="user-o"
@@ -111,27 +64,10 @@ const SignInScreen = ({ navigation }) => {
                         placeholderTextColor="#666666"
                         style={styles.textInput}
                         autoCapitalize="none"
-                        onChangeText={(val) => textInputChange(val)}
-                        // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                        value={email}
+                        onChangeText={(e) => setEmail(e)}
                     />
-                    {infor.check_textInputChange ?
-                        <Animatable.View
-                            animation="bounceIn"
-
-                        >
-                            <Feather
-                                name="check-circle"
-                                color="green"
-                                size={20}
-                            />
-                        </Animatable.View>
-                        : null}
                 </View>
-                {infor.isValidUser ? null :
-                    <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
-                    </Animatable.View>
-                }
 
                 <Text style={[styles.text_footer, {
                     marginTop: 35
@@ -147,41 +83,31 @@ const SignInScreen = ({ navigation }) => {
                     <TextInput
                         placeholder="Your Password"
                         style={styles.textInput}
-                        secureTextEntry={infor.secureTextEntry ? true : false}
                         autoCapitalize="none"
-                        onChangeText={(val) => handlePasswordChange(val)}
+                        value={password}
+                        onChangeText={(p) => setPassword(p)}
+                        secureTextEntry
                     />
                     <TouchableOpacity
-                        onPress={updateSecureTextEntry}
                     >
-                        {infor.secureTextEntry ?
-                            <Feather
-                                name="eye-off"
-                                color="grey"
-                                size={20}
-                            />
-                            :
-                            <Feather
-                                name="eye"
-                                color="grey"
-                                size={20}
-                            />
-                        }
+                        <Feather
+                            name="eye-off"
+                            color="grey"
+                            size={20}
+                        />
                     </TouchableOpacity>
                 </View>
-                {infor.isValidPassword ? null :
-                    <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
-                    </Animatable.View>
-                }
+
+                
 
                 <TouchableOpacity>
                     <Text style={{ color: 'black', marginTop: 15 }}>Forgot password?</Text>
                 </TouchableOpacity>
+
                 <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
-                        onPress={() => { loginHandle(infor.username, infor.password) }}
+                        onPress={() => signIn(email, password)}
                     >
                         <LinearGradient
                             colors={['#BF6B7B', '#BF6B7B']}
@@ -194,7 +120,7 @@ const SignInScreen = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        // onPress={() => navigation.navigate('SignUpScreen')}
+                        onPress={() => navigation.navigate('SignUp')}
                         style={[styles.signIn, {
                             borderColor: '#BF6B7B',
                             borderWidth: 1,
@@ -227,7 +153,8 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingHorizontal: 20,
         paddingBottom: 50
     },
@@ -243,6 +170,10 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 30
+    },
+    errorMess: {
+        color: '#FF0000',
+        fontSize: 14,
     },
     text_footer: {
         color: '#05375a',
@@ -313,7 +244,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     logo: {
-        width: '40%',
-        height: '100%'
+        width: '60%',
+        height: '130%'
     },
 });
