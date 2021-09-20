@@ -14,13 +14,14 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
 import * as Animatable from 'react-native-animatable';
+import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Dialog from 'react-native-dialog';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DropDown from '../components/DropDown';
-
+import PickImage from '../components/PickImage';
 const { width, height } = Dimensions.get("window");
 
 const CheckData = ({ showDialog, handleSubmit, bag, visible }) => {
@@ -45,6 +46,7 @@ const FormScreen = () => {
     furnitureType: '',
     notes: '',
     reporterName: '',
+    image: null,
   });
 
   const [errors, setErrors] = useState({
@@ -240,7 +242,8 @@ const FormScreen = () => {
         notes: '',
         reporterName: '',
       });
-      Alert.alert('Save Success', 'You haeve successfully filled in the information!');
+      Alert.alert('Save Success', 'You have successfully filled in the information!');
+      showDialog();
       console.log(response?.message);
     }
     catch (error) {
@@ -456,8 +459,14 @@ const FormScreen = () => {
               </Animatable.View>
             )}
 
-            <View style={[styles.titleContainer, {
+            <PickImage 
+              data = {data}
+              setData={setData}
+            />
+
+            <View style={[styles.titleContainer1, {
               alignItems: 'center',
+              // flexDirection: 'row',
             }]}>
               <TouchableOpacity
                 disabled={disable}
@@ -466,6 +475,11 @@ const FormScreen = () => {
               >
                 <Text style={styles.textSign}>Submit</Text>
               </TouchableOpacity>
+              {/* <TouchableOpacity
+                style={styles.pick}
+              >
+                <Text style={styles.textSign}>Pick Image</Text>
+              </TouchableOpacity> */}
             </View>
             <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog} />
           </ScrollView>
@@ -557,6 +571,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20
   },
+  titleContainer1: {
+    width: 350,
+    flex: 1,
+  },
   errorMess: {
     color: '#FF0000',
     fontSize: 14,
@@ -629,6 +647,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 15,
     backgroundColor: '#BF6B7B'
+  },
+  pick: {
+    width: '40%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: '#009387',
+    borderWidth: 1,
+    marginTop: 15,
+    backgroundColor: '#ADA2F2',
+    marginLeft: 45
   },
   buttonView: {
     width: '40%',
