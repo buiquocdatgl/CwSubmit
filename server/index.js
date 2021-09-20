@@ -16,9 +16,13 @@ const init = async () => {
         return;
     }
     let firstUser = new User({
-        username: "buiquocdatgl2000@gmail.com",
-        password: "quocbin",
-        confirmPassword: "quocbin",
+        propertyType: 'Room',
+        bedRoom: 'Single Bed',
+        addingDate: new Date(),
+        monthlyRentPrice: '2.3',
+        furnitureType: 'Television',
+        notes: 'Good',
+        reporterName: 'Bin'
     });
     await firstUser.save();
 }
@@ -46,11 +50,17 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.post("/create", async (req, res) => {
-    const { username, password, confirmPassword } = req.body;
-    const newUser = new User({ username, password, confirmPassword });
+    console.log(req.body);
+    const { propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName } = req.body;
+    const newUser = new User({ propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName });
     await newUser.save();
     res.json({ message: "Create success" });
 });
+
+app.get("/get", async (req, res) =>{
+    res.json(await User.find({}).exec());
+})
+
 
 app.listen(PORT, () => {
     console.log(`running on port: ${PORT}`);

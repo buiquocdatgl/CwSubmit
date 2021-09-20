@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema({
-  username: String,
-  password: String,
-  confirmPassword: String,
+  propertyType: String,
+  bedRoom: String,
+  addingDate: { type: Date, default: Date.now },
+  monthlyRentPrice: String,
+  furnitureType: String,
+  notes: String,
+  reporterName: String,
 });
 
 module.exports = mongoose.model("users", UserSchema);

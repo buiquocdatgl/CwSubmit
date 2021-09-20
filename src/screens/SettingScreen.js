@@ -1,21 +1,71 @@
-/* eslint-disable prettier/prettier */
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, StyleSheet, Text } from 'react-native';
 
-const SettingScreen = () => {
-  return (
-    <View style={styles.container}>
-      <Text>BookMark Screen</Text>
-    </View>
-  );
+const ViewDataScreen = () => {
+
+    const [value, setvalue] = useState([]);
+
+    const fectData = async () => {
+        let request = await fetch("http://192.168.1.55:3000/get");
+        let response = await request.json();
+        setvalue(response);
+    }
+
+    useEffect(() => {
+        fectData();
+    }, [])
+
+    useEffect(() => {
+        console.log(value)
+    }, [value])
+
+    return (
+        <ScrollView>
+            <Text style={styles.header}>View Data</Text>
+            {
+                value.map((item, index) => (
+                    <View style={styles.card} key={index}>
+                        <Text style={styles.text}>ID: {item._id}</Text>
+                        <Text style={styles.text}>PropertyType: {item.propertyType}</Text>
+                        <Text style={styles.text}>BedRome: {item.bedRoom}</Text>
+                        <Text style={styles.text}>Date: {item.addingDate}</Text>
+                        <Text style={styles.text}>MoneyRent: {item.monthlyRentPrice}</Text>
+                        <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
+                        <Text style={styles.text}>Notes: {item.notes}</Text>
+                        <Text style={styles.text}>ReportName: {item.reporterName}</Text>
+                    </View>
+                ))
+            }
+        </ScrollView>
+    );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default ViewDataScreen;
 
-export default SettingScreen;
+const styles = StyleSheet.create({
+    header:{
+        fontSize: 28,
+        textAlign: 'center',
+        marginTop: 30,
+        marginBottom: 20,
+        fontWeight: 'bold',
+
+    },
+    card: {
+        flex: 1,
+        backgroundColor: '#D3D3D3',
+        margin: 10,
+        textAlign: 'center',
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 20,
+        marginTop: 10,
+        borderRadius: 15
+    },
+    text: {
+        fontWeight: 'bold',
+        fontSize: 18
+    }
+
+});

@@ -32,7 +32,7 @@ const MainTabScreen = () => (
                 tabBarLabel: 'BookMark',
                 tabBarColor: '#A67772',
                 tabBarIcon: ({ color }) => (
-                    <Icon name="bookmark-outline" color={color} size={26} />
+                    <Icon name="aperture" color={color} size={26} />
                 ),
             }}
         />
@@ -48,10 +48,10 @@ const MainTabScreen = () => (
             }}
         />
         <Tab.Screen
-            name="Setting"
+            name="View"
             component={SettingScreen}
             options={{
-                tabBarLabel: 'BookMark',
+                tabBarLabel: 'View',
                 tabBarColor: '#A67772',
                 tabBarIcon: ({ color }) => (
                     <Icon name="bookmark-outline" color={color} size={26} />
