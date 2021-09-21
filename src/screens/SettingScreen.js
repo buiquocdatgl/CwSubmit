@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { images, COLORS, SIZES, FONTS } from '../constants/index';
+import { Card } from 'react-native-shadow-cards';
+
+const { width } = Dimensions.get('screen');
+const cardWidth = width / 1.8;
 
 const ViewDataScreen = () => {
 
@@ -24,15 +29,33 @@ const ViewDataScreen = () => {
             <Text style={styles.header}>View Data</Text>
             {
                 value.map((item, index) => (
-                    <View style={styles.card} key={index}>
-                        <Text style={styles.text}>ID: {item._id}</Text>
-                        <Text style={styles.text}>PropertyType: {item.propertyType}</Text>
-                        <Text style={styles.text}>BedRome: {item.bedRoom}</Text>
-                        <Text style={styles.text}>Date: {item.addingDate}</Text>
-                        <Text style={styles.text}>MoneyRent: {item.monthlyRentPrice}</Text>
-                        <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
-                        <Text style={styles.text}>Notes: {item.notes}</Text>
-                        <Text style={styles.text}>ReportName: {item.reporterName}</Text>
+                    <View style={{ ...styles.card }} key={index}>
+                        <TouchableOpacity style={styles.priceTag}>
+                            <Text
+                                style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>
+                                Delete
+                            </Text>
+                        </TouchableOpacity>
+                        <Image
+                            source={require('../assets/images/home1.png')}
+                            style={{
+                                height: 200,
+                                width: '100%',
+                                borderTopLeftRadius: 15,
+                                borderTopRightRadius: 15,
+                            }}
+                        />
+
+                        <View style={styles.cardDetails}>
+                                <Text style={styles.text}>ID: {item._id}</Text>
+                                <Text style={styles.text}>PropertyType: {item.propertyType}</Text>
+                                <Text style={styles.text}>BedRome: {item.bedRoom}</Text>
+                                <Text style={styles.text}>Date: {item.addingDate}</Text>
+                                <Text style={styles.text}>MoneyRent: {item.monthlyRentPrice}</Text>
+                                <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
+                                <Text style={styles.text}>Notes: {item.notes}</Text>
+                                <Text style={styles.text}>ReportName: {item.reporterName}</Text>
+                        </View>
                     </View>
                 ))
             }
@@ -43,7 +66,7 @@ const ViewDataScreen = () => {
 export default ViewDataScreen;
 
 const styles = StyleSheet.create({
-    header:{
+    header: {
         fontSize: 28,
         textAlign: 'center',
         marginTop: 30,
@@ -51,17 +74,49 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
 
     },
-    card: {
-        flex: 1,
-        backgroundColor: '#D3D3D3',
-        margin: 10,
-        textAlign: 'center',
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
+    cardDetails: {
+        height: 220,
+        borderRadius: 15,
+        backgroundColor: COLORS.white,
+        position: 'absolute',
+        bottom: -10,
+        paddingTop: 10,
         paddingLeft: 20,
+        width: '100%',
+    },
+    // card: {
+    //     flex: 1,
+    //     backgroundColor: '#D3D3D3',
+    //     margin: 10,
+    //     textAlign: 'center',
+    //     fontSize: 20,
+    //     paddingTop: 20,
+    //     paddingBottom: 20,
+    //     paddingLeft: 20,
+    //     marginTop: 10,
+    //     borderRadius: 15
+    // },
+    card: {
+        height: 380,
+        width: 382,
+        marginRight: 20,
+        borderRadius: 15,
+        backgroundColor: COLORS.white,
         marginTop: 10,
-        borderRadius: 15
+        marginLeft: 15,
+        marginBottom: 20,
+    },
+    priceTag: {
+        height: 60,
+        width: 80,
+        backgroundColor: COLORS.search,
+        position: 'absolute',
+        zIndex: 1,
+        right: 0,
+        borderTopRightRadius: 15,
+        borderBottomLeftRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     text: {
         fontWeight: 'bold',

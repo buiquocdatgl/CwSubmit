@@ -16,6 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthenticationContext } from "../../service/context";
+import LottieView from 'lottie-react-native';
 
 const SignUpScreen = ({ navigation }) => {
 
@@ -29,7 +30,12 @@ const SignUpScreen = ({ navigation }) => {
         <View style={styles.container}>
             <StatusBar backgroundColor='#BF6B7B' barStyle="light-content" />
             <View style={styles.header}>
-                <Text style={styles.text_header}>Register Now!</Text>
+                <LottieView
+                    source={require('../assets/images/splash.json')}
+                    autoPlay
+                    loop={true}
+                    speed={0.5}
+                />
             </View>
             <Animatable.View
                 animation="fadeInUpBig"

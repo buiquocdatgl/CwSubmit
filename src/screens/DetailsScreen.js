@@ -45,7 +45,9 @@ const DetailsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Icon name="arrow-back" size={28} onPress={() => navigation.goBack()} style={{mar}}/>
       {renderGallery()}
+
       <Animatable.View
         style={styles.footer}
         animation="fadeInUpBig"
@@ -108,7 +110,7 @@ const DetailsScreen = ({ navigation }) => {
             <Text style={styles.text2}>
               Gallery
             </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
                 source={require('../assets/images/home1.png')}
                 resizeMode="cover"
@@ -120,7 +122,7 @@ const DetailsScreen = ({ navigation }) => {
                 style={styles.gallery2}
               />
               <View style={styles.more}>
-                <Text style={{ color: 'grey', fontWeight:'bold' }}>+6</Text>
+                <Text style={{ color: 'grey', fontWeight: 'bold' }}>+6</Text>
               </View>
             </View>
           </View>
@@ -209,17 +211,17 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15
   },
-  more:{
-    width:55,
-    height:55,
+  more: {
+    width: 55,
+    height: 55,
     borderWidth: 1,
     borderColor: "transparent",
     backgroundColor: "#f1f2f6",
     position: "absolute",
     top: 0,
     right: 25,
-    alignItems: 'center', 
-    justifyContent:'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'column',
   }
 });

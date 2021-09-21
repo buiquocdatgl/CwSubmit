@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import {
   Text,
@@ -14,7 +13,6 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
 import * as Animatable from 'react-native-animatable';
-import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Dialog from 'react-native-dialog';
 import IonicIcon from 'react-native-vector-icons/Ionicons'
@@ -22,6 +20,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DropDown from '../components/DropDown';
 import PickImage from '../components/PickImage';
+
 const { width, height } = Dimensions.get("window");
 
 const CheckData = ({ showDialog, handleSubmit, bag, visible }) => {

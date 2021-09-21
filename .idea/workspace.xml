@@ -2,18 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="83e53e78-c8c6-4d3f-891c-bd8e44258aea" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/adaptive-icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/favicon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/logo1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/splash.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/splash.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screens/SignInScreen.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/screens/SplashScreen.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/DetailsScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/DetailsScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/FormScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/FormScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SettingScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SettingScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SignInScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SignInScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SignUpScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SignUpScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SplashScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SplashScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,6 +40,7 @@
       <option name="presentableId" value="Default" />
       <updated>1632042440727</updated>
       <workItem from="1632042442065" duration="1000" />
+      <workItem from="1632217211125" duration="3000" />
     </task>
     <servers />
   </component>

@@ -58,24 +58,18 @@ const SplashScreen = ({ navigation }) => {
     //     </Animated.View>
     //   </View>
     // </SafeAreaView>
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#BF6B7B',
 
-      }}
-    >
       <LottieView
-        source={require('../assets/images/splash.json')}
+        source={require('../assets/images/load.json')}
         autoPlay
         loop={false}
         speed={0.5}
+        resizeMode="cover"
         onAnimationFinish={() => {
           console.log('Animation Finished!')
           navigation.replace('SignIn');
         }}
       />
-    </View>
   );
 };
 
