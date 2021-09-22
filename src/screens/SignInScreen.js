@@ -24,15 +24,7 @@ const SignInScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const { signIn, error } = useContext(AuthenticationContext);
 
-    // const signIn = async () => {
-    //     try {
-    //         const response = await firebase.auth().signInWithEmailAndPassword(email, password);
-    //         navigation.navigate('HomeScreen');
-    //     } catch (err) {
-    //         setError(err.message);
-    //     }
 
-    // }
 
     return (
         <View style={styles.container}>
@@ -67,6 +59,7 @@ const SignInScreen = ({ navigation }) => {
                         value={email}
                         onChangeText={(e) => setEmail(e)}
                     />
+
                 </View>
 
                 <Text style={[styles.text_footer, {
@@ -173,6 +166,10 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     errorMess: {
+        color: '#FF0000',
+        fontSize: 14,
+    },
+    errorMsg: {
         color: '#FF0000',
         fontSize: 14,
     },

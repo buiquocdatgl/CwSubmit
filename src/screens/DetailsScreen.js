@@ -45,7 +45,7 @@ const DetailsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name="arrow-back" size={28} onPress={() => navigation.goBack()} style={{mar}}/>
+      <Icon name="arrow-back" size={28} onPress={() => navigation.goBack()}/>
       {renderGallery()}
 
       <Animatable.View
