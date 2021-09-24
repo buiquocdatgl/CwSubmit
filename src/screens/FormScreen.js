@@ -35,6 +35,7 @@ const FormScreen = ({ navigation }) => {
     notes: '',
     reporterName: '',
     image: '',
+    name: ''
   });
 
   const [errors, setErrors] = useState({
@@ -43,6 +44,7 @@ const FormScreen = ({ navigation }) => {
     monthlyRentPrice: '',
     notes: '',
     reporterName: '',
+    name: '',
   });
 
   const [show, setShow] = useState(false);
@@ -60,17 +62,23 @@ const FormScreen = ({ navigation }) => {
       || data.propertyType === ''
       || data.reporterName === ''
       || data.image === ''
+      || data.name === ''
       || errors.reporterName !== ''
       || errors.propertyType !== ''
       || errors.bedRoom !== ''
       || errors.notes !== ''
-      || errors.monthlyRentPrice !== '') {
+      || errors.monthlyRentPrice !== ''
+      || errors.name !== ''
+    ) {
       setDisable(true);
     }
     else {
       setDisable(false);
     }
-  }, [data.bedRoom, data.monthlyRentPrice, data.propertyType, data.reporterName,data.image, errors.monthlyRentPrice, errors.bedRoom, errors.notes, errors.propertyType, errors.reporterName])
+  },
+    [data.bedRoom, data.monthlyRentPrice,
+    data.propertyType, data.reporterName, data.image, data.name,
+    errors.name, errors.monthlyRentPrice, errors.bedRoom, errors.notes, errors.propertyType, errors.reporterName])
 
   useEffect(() => {
     console.log('data', data);
@@ -207,7 +215,35 @@ const FormScreen = ({ navigation }) => {
           setData({ ...data, [name]: value });
         }
         break;
-      
+      case "name":
+        if (value.length === 0) {
+          setErrors({ ...errors, [name]: 'Name  is required' })
+          setData({ ...data, [name]: '' });
+        }
+        else {
+          setData({ ...data, [name]: value });
+          setErrors({ ...errors, [name]: '' })
+          
+          fetch ("http://192.168.1.55:3000/checkName", {
+            method: 'POST',
+            body: JSON.stringify({ [name]: value }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            if(res.data.length > 0){
+              console.log(res.data);
+              setErrors({ ...errors, [name]: 'Name  is duplicated!!' })
+            }
+            else{
+              setErrors({ ...errors, [name]: '' })
+            }
+          })
+          .catch((e) => console.log(e))
+        }
+        break;
+
       default:
         setData({ ...data, [name]: value });
         break;
@@ -233,6 +269,7 @@ const FormScreen = ({ navigation }) => {
         notes: '',
         reporterName: '',
         image: '',
+        name: '',
       });
       Alert.alert('Save Success', 'You have successfully filled in the information!');
       showDialog();
@@ -244,13 +281,15 @@ const FormScreen = ({ navigation }) => {
     }
   }
 
-  let bag = `    Property Type ${data.propertyType} \n 
+  let bag = `  Property Type ${data.propertyType} \n 
   Bedrooms: ${data.bedRoom} \n
   Date Add Rent: ${data.addingDate.toDateString()} \n
   Monthly Rent Price: ${data.monthlyRentPrice} \n
   Furniture Type: ${data.furnitureType} \n
   Note: ${data.notes} \n
-  Reporter Name: ${data.reporterName}`;
+  Reporter Name: ${data.reporterName} \n
+  Name: ${data.name}
+  `;
 
 
   return (
@@ -291,7 +330,7 @@ const FormScreen = ({ navigation }) => {
             {/* Bed Room */}
             <DropDown
               label="Bed Room"
-              icon="home"
+              icon="boat"
               data={dataBed}
               value={data.bedRoom}
               changeValue={handleChange}
@@ -364,7 +403,7 @@ const FormScreen = ({ navigation }) => {
             {/* FurnitureType */}
             <DropDown
               label="FurnitureType"
-              icon="home"
+              icon="cog"
               data={dataFur}
               value={data.furnitureType}
               changeValue={handleChange}
@@ -452,6 +491,46 @@ const FormScreen = ({ navigation }) => {
               </Animatable.View>
             )}
 
+            {/* NameHouse */}
+
+            <View style={styles.labelHead}>
+              <View >
+                <FontAwesome
+                  name="book"
+                  style={styles.iconUser}
+                  size={20}
+                />
+              </View>
+              <Text style={styles.text_footer}>NameHouse</Text>
+            </View>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="NameHouse"
+                style={styles.textInput}
+                autoCapitalize="none"
+                value={data.name}
+                onChangeText={(value) => handleChange("name", value)}
+              />
+              {
+                data.name.length > 0 ?
+                  <Animatable.View
+                    animation="bounceIn"
+
+                  >
+                    <Feather
+                      name="check-circle"
+                      color="green"
+                      size={20}
+                    />
+                  </Animatable.View> : null
+              }
+            </View>
+            {errors.name.length > 0 && (
+              <Animatable.View animation="fadeInLeft" duration={500}>
+                <Text style={styles.errorMess}>{errors.name}</Text>
+              </Animatable.View>
+            )}
+
             <PickImage
               data={data}
               setData={setData}
@@ -477,7 +556,7 @@ const FormScreen = ({ navigation }) => {
                 <Text style={styles.textSign}>Pick Image</Text>
               </TouchableOpacity> */}
             </View>
-            <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog}  />
+            <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog} />
           </ScrollView>
         </KeyboardAvoidingView>
       </Animatable.View >

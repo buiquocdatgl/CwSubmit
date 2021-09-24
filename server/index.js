@@ -24,6 +24,7 @@ const init = async () => {
         notes: 'Good',
         reporterName: 'Bin',
         image: 'https://firebasestorage.googleapis.com/v0/b/coursework-90c00.appspot.com/o/2021-09-23T11%3A32%3A19.943Z?alt=media&token=f38cd9a4-fe92-4da7-9628-60d9ff0e09c2',
+        name: 'Pavilon',
     });
     await firstUser.save();
 }
@@ -52,8 +53,8 @@ app.use(morgan("dev"));
 
 app.post("/create", async (req, res) => {
     console.log(req.body);
-    const { propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image } = req.body;
-    const newUser = new User({ propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image });
+    const { propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image, name } = req.body;
+    const newUser = new User({ propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image, name });
     await newUser.save();
     res.json({ message: "Create success" });
 });
@@ -83,6 +84,10 @@ app.delete("/delete/:id", async (req, res) =>{
     });
 })
 
+app.post("/checkName", async (req, res) => {
+  const house = await User.find({name: req.body.name}).exec();
+  res.json(house);
+})
 
 
 app.listen(PORT, () => {

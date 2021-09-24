@@ -73,6 +73,7 @@ const ViewDataScreen = ({ navigation }) => {
                             <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
                             <Text style={styles.text}>Notes: {item.notes}</Text>
                             <Text style={styles.text}>ReportName: {item.reporterName}</Text>
+                            <Text style={styles.text}>Name: {item.name}</Text>
                         </View>
                         <CheckData 
                             bag="Do you want to Delelte" 
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
 
     },
     cardDetails: {
-        height: 220,
+        height: 240,
         borderRadius: 15,
         backgroundColor: COLORS.white,
         position: 'absolute',
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     //     borderRadius: 15
     // },
     card: {
-        height: 380,
+        height: 400,
         width: 382,
         marginRight: 20,
         borderRadius: 15,

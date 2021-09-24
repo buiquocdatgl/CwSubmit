@@ -9,6 +9,7 @@ const UserSchema = mongoose.Schema({
   notes: String,
   reporterName: String,
   image: String,
+  name:String,
 });
 
 module.exports = mongoose.model("users", UserSchema);
