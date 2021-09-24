@@ -20,23 +20,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DropDown from '../components/DropDown';
 import PickImage from '../components/PickImage';
+import { ActivityIndicator } from 'react-native-paper';
+import CheckData from '../components/Confirm'
 
 const { width, height } = Dimensions.get("window");
 
-const CheckData = ({ showDialog, handleSubmit, bag, visible }) => {
-  return (
-    <Dialog.Container visible={visible}>
-      <Dialog.Title>Check Data</Dialog.Title>
-      <Dialog.Description>
-        {bag}
-      </Dialog.Description>
-      <Dialog.Button label="Back To Edit" onPress={showDialog} />
-      <Dialog.Button label="Confirm" onPress={handleSubmit} />
-    </Dialog.Container>
-  );
-}
-
-const FormScreen = () => {
+const FormScreen = ({ navigation }) => {
   const [data, setData] = useState({
     propertyType: '',
     bedRoom: '',
@@ -45,7 +34,7 @@ const FormScreen = () => {
     furnitureType: '',
     notes: '',
     reporterName: '',
-    image: null,
+    image: '',
   });
 
   const [errors, setErrors] = useState({
@@ -59,6 +48,7 @@ const FormScreen = () => {
   const [show, setShow] = useState(false);
   const [disable, setDisable] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const showDialog = () => {
     setVisible(!visible);
@@ -69,6 +59,7 @@ const FormScreen = () => {
       || data.monthlyRentPrice === ''
       || data.propertyType === ''
       || data.reporterName === ''
+      || data.image === ''
       || errors.reporterName !== ''
       || errors.propertyType !== ''
       || errors.bedRoom !== ''
@@ -79,7 +70,7 @@ const FormScreen = () => {
     else {
       setDisable(false);
     }
-  }, [data.bedRoom, data.monthlyRentPrice, data.propertyType, data.reporterName, errors.monthlyRentPrice, errors.bedRoom, errors.notes, errors.propertyType, errors.reporterName])
+  }, [data.bedRoom, data.monthlyRentPrice, data.propertyType, data.reporterName,data.image, errors.monthlyRentPrice, errors.bedRoom, errors.notes, errors.propertyType, errors.reporterName])
 
   useEffect(() => {
     console.log('data', data);
@@ -216,6 +207,7 @@ const FormScreen = () => {
           setData({ ...data, [name]: value });
         }
         break;
+      
       default:
         setData({ ...data, [name]: value });
         break;
@@ -240,9 +232,11 @@ const FormScreen = () => {
         furnitureType: '',
         notes: '',
         reporterName: '',
+        image: '',
       });
       Alert.alert('Save Success', 'You have successfully filled in the information!');
       showDialog();
+      navigation.navigate("View");
       console.log(response?.message);
     }
     catch (error) {
@@ -458,9 +452,11 @@ const FormScreen = () => {
               </Animatable.View>
             )}
 
-            <PickImage 
-              data = {data}
+            <PickImage
+              data={data}
               setData={setData}
+            // setUploading={setUploading}
+            // uploading={uploading}
             />
 
             <View style={[styles.titleContainer1, {
@@ -474,13 +470,14 @@ const FormScreen = () => {
               >
                 <Text style={styles.textSign}>Submit</Text>
               </TouchableOpacity>
+
               {/* <TouchableOpacity
                 style={styles.pick}
               >
                 <Text style={styles.textSign}>Pick Image</Text>
               </TouchableOpacity> */}
             </View>
-            <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog} />
+            <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog}  />
           </ScrollView>
         </KeyboardAvoidingView>
       </Animatable.View >

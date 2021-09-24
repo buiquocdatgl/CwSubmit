@@ -240,18 +240,21 @@ const HomeScreen = ({ navigation }) => {
                         }}>Recommended</Text>
                     </View>
                     <View style={{ width: "50%", alignItems: "flex-end" }}>
-                        <View style={{
-                            backgroundColor: "#F291A3",
-                            paddingHorizontal: 20,
-                            paddingVertical: 5,
-                            borderRadius: 15
-                        }}>
+                        <TouchableOpacity 
+                            style={{
+                                backgroundColor: "#F291A3",
+                                paddingHorizontal: 20,
+                                paddingVertical: 5,
+                                borderRadius: 15
+                            }}
+                            onPress ={() => navigation.navigate("View")}
+                        >
                             <Text style={{
                                 fontWeight: "bold",
                                 fontSize: 13,
                                 color: "#FFF"
-                            }}>More</Text>
-                        </View>
+                            }}>View All</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 {renderListOptions()}

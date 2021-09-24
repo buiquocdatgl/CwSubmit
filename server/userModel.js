@@ -8,7 +8,7 @@ const UserSchema = mongoose.Schema({
   furnitureType: String,
   notes: String,
   reporterName: String,
-  image: String
+  image: String,
 });
 
 module.exports = mongoose.model("users", UserSchema);

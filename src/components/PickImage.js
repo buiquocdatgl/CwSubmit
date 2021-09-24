@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Text, Image, View, Platform, TouchableOpacity, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import firebase from "../../firebase/fire";;
+import firebase from "../../firebase/fire";
 import { ActivityIndicator } from 'react-native-paper';
+
 
 const PickImage = ({ data, setData }) => {
 
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
+
 
     useEffect(() => {
         (async () => {
@@ -33,6 +35,7 @@ const PickImage = ({ data, setData }) => {
 
         if (!result.cancelled) {
             setImage(result.uri);
+            // await upLoadImage();
         }
     };
 
@@ -53,9 +56,11 @@ const PickImage = ({ data, setData }) => {
         const ref = firebase.storage().ref().child(new Date().toISOString())
         const snapshot = ref.put(blob)
 
-        snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, () => {
-            setUploading(true);
-        }),
+        snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED,
+            () => {
+                setUploading(true);
+
+            },
             (error) => {
                 setUploading(false);
                 console.log(error);
@@ -65,11 +70,14 @@ const PickImage = ({ data, setData }) => {
             () => {
                 snapshot.snapshot.ref.getDownloadURL().then((url) => {
                     setUploading(false);
+                    console.log(url);
+                    setData({ ...data, image: url });
                     console.log("dowload url : ", url);
                     blob.close();
                     return url;
-                })
+                });
             }
+        );
     }
 
 
@@ -91,6 +99,7 @@ const PickImage = ({ data, setData }) => {
                 : <ActivityIndicator size="large" color="#000"
                 />
             }
+
         </View>
     );
 }
