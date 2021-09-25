@@ -20,6 +20,7 @@ const PickImage = ({ data, setData }) => {
                 }
             }
         })();
+        // return () => setImage('');
     }, []);
 
     const pickImage = async () => {

@@ -221,26 +221,27 @@ const FormScreen = ({ navigation }) => {
           setData({ ...data, [name]: '' });
         }
         else {
-          setData({ ...data, [name]: value });
           setErrors({ ...errors, [name]: '' })
-          
-          fetch ("http://192.168.1.55:3000/checkName", {
-            method: 'POST',
-            body: JSON.stringify({ [name]: value }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((res) => {
-            if(res.data.length > 0){
-              console.log(res.data);
-              setErrors({ ...errors, [name]: 'Name  is duplicated!!' })
-            }
-            else{
-              setErrors({ ...errors, [name]: '' })
-            }
-          })
-          .catch((e) => console.log(e))
+          setData({ ...data, [name]: value });
+        
+          // fetch ("http://192.168.1.55:3000/checkName", {
+          //   method: 'POST',
+          //   body: JSON.stringify({ name: value }),
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //   },
+          // })
+          // .then((res) => {
+          //   console.log(value)
+          //   if(res.data.length > 0){
+          //     console.log(res.data);
+          //     setErrors({ ...errors, [name]: 'Name  is duplicated!!' })
+          //   }
+          //   else{
+          //     setErrors({ ...errors, [name]: '' })
+          //   }
+          // })
+          // .catch((e) => console.log(e))
         }
         break;
 
@@ -273,8 +274,11 @@ const FormScreen = ({ navigation }) => {
       });
       Alert.alert('Save Success', 'You have successfully filled in the information!');
       showDialog();
-      navigation.navigate("View");
-      console.log(response?.message);
+      // navigation.navigate("View");
+      if(res?.error){
+        return Alert.alert('Name is Duplicated!!!!!');
+      }
+      console.log(response);
     }
     catch (error) {
       console.log(error.message);

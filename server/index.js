@@ -54,6 +54,13 @@ app.use(morgan("dev"));
 app.post("/create", async (req, res) => {
     console.log(req.body);
     const { propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image, name } = req.body;
+    const house = await User.findOne({name: req.body.name});
+    if(house){
+      return res.status(200).send({
+        message: 'Name house is Duplicated',
+        error : true,
+      });
+    }
     const newUser = new User({ propertyType, bedRoom, addingDate, monthlyRentPrice, furnitureType, notes, reporterName, image, name });
     await newUser.save();
     res.json({ message: "Create success" });
@@ -85,7 +92,9 @@ app.delete("/delete/:id", async (req, res) =>{
 })
 
 app.post("/checkName", async (req, res) => {
+  console.log(req.body.name);
   const house = await User.find({name: req.body.name}).exec();
+  console.log(house)
   res.json(house);
 })
 
