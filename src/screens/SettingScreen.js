@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 import { images, COLORS, SIZES, FONTS } from '../constants/index';
 import CheckData from '../components/Confirm'
 
@@ -10,10 +10,15 @@ const ViewDataScreen = ({ navigation }) => {
 
     const [value, setvalue] = useState([]);
     const [visible, setVisible] = useState(false);
+    const [item, setItem] = useState('');
 
-    const showDialog = () => {
+
+    const showDialog = (e) => {
         setVisible(!visible);
+        setItem(e)
     };
+
+    console.log(item);
 
     const fectData = async () => {
         let request = await fetch("http://192.168.1.55:3000/get");
@@ -21,8 +26,8 @@ const ViewDataScreen = ({ navigation }) => {
         setvalue(response);
     }
 
-    const handleDelete = async (id) => {
-        await fetch(`http://192.168.1.55:3000/delete/${id}`, {
+    const handleDelete = async () => {
+        await fetch(`http://192.168.1.55:3000/delete/${item._id}`, {
             method: 'DELETE'
         });
         showDialog();
@@ -33,14 +38,61 @@ const ViewDataScreen = ({ navigation }) => {
         fectData();
     }, [])
 
-    useEffect(() => {
-        console.log(value)
-    }, [value])
+    // useEffect(() => {
+    //     console.log(value)
+    // }, [value])
 
     return (
-        <ScrollView>
+        <View style={{ flex: 1 }}>
             <Text style={styles.header}>View Data</Text>
-            {
+            <FlatList
+                data={value}
+                renderItem={({ item, index }) => (
+                    <View style={{ ...styles.card }}>
+                        <TouchableOpacity
+                            style={styles.priceTag}
+                            onPress={() => showDialog(item)}
+                        >
+                            <Text
+                                style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>
+                                Delete
+                            </Text>
+                        </TouchableOpacity>
+                        <Image
+                            source={{
+                                uri: item.image
+                            }}
+                            style={{
+                                height: 200,
+                                width: '100%',
+                                borderTopLeftRadius: 15,
+                                borderTopRightRadius: 15,
+                            }}
+                        />
+
+                        <View style={styles.cardDetails}>
+                            <Text style={styles.text}>ID: {item._id}</Text>
+                            <Text style={styles.text}>PropertyType: {item.propertyType}</Text>
+                            <Text style={styles.text}>BedRome: {item.bedRoom}</Text>
+                            <Text style={styles.text}>Date: {item.addingDate}</Text>
+                            <Text style={styles.text}>MoneyRent: {item.monthlyRentPrice}</Text>
+                            <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
+                            <Text style={styles.text}>Notes: {item.notes}</Text>
+                            <Text style={styles.text}>ReportName: {item.reporterName}</Text>
+                            <Text style={styles.text}>Name: {item.name}</Text>
+                        </View>
+
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            <CheckData
+                bag="Do you want to Delelte"
+                visible={visible}
+                handleSubmit={handleDelete}
+                setVisible={setVisible}
+            />
+            {/* {
                 value.map((item, index) => (
                     <View style={{ ...styles.card }} key={index}>
                         <TouchableOpacity
@@ -75,15 +127,16 @@ const ViewDataScreen = ({ navigation }) => {
                             <Text style={styles.text}>ReportName: {item.reporterName}</Text>
                             <Text style={styles.text}>Name: {item.name}</Text>
                         </View>
-                        <CheckData 
-                            bag="Do you want to Delelte" 
-                            visible={visible} 
-                            handleSubmit={() => handleDelete(item._id)} 
-                            showDialog={showDialog}  />
+                        <CheckData
+                            bag="Do you want to Delelte"
+                            visible={visible}
+                            handleSubmit={() => handleDelete(item._id)}
+                            showDialog={showDialog} />
                     </View>
+
                 ))
-            }
-        </ScrollView>
+            } */}
+        </View>
     );
 };
 

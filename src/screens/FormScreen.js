@@ -261,6 +261,10 @@ const FormScreen = ({ navigation }) => {
         },
       });
       let response = await request.json();
+      showDialog();
+      if(response?.error){
+        return Alert.alert('Name is Duplicated. Back to Edit!!!');
+      }
       setData({
         propertyType: '',
         bedRoom: '',
@@ -273,11 +277,7 @@ const FormScreen = ({ navigation }) => {
         name: '',
       });
       Alert.alert('Save Success', 'You have successfully filled in the information!');
-      showDialog();
-      // navigation.navigate("View");
-      if(res?.error){
-        return Alert.alert('Name is Duplicated!!!!!');
-      }
+      navigation.navigate("View");
       console.log(response);
     }
     catch (error) {
@@ -560,7 +560,11 @@ const FormScreen = ({ navigation }) => {
                 <Text style={styles.textSign}>Pick Image</Text>
               </TouchableOpacity> */}
             </View>
-            <CheckData bag={bag} visible={visible} handleSubmit={handleSubmit} showDialog={showDialog} />
+            <CheckData 
+              bag={bag} 
+              visible={visible} 
+              handleSubmit={handleSubmit} 
+              setVisible={setVisible} />
           </ScrollView>
         </KeyboardAvoidingView>
       </Animatable.View >
