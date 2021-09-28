@@ -91,6 +91,17 @@ app.delete("/delete/:id", async (req, res) => {
     });
 })
 
+app.post("/search", async (req, res) => {
+  try {
+    const users = await User.find({ propertyType: req.body.propertyType }).exec();
+    console.log(users);
+    res.json(users);
+  } 
+  catch (err) {
+    res.status(404).send("Can Not Found");
+  }
+})
+
 app.post("/checkName", async (req, res) => {
   console.log(req.body.name);
   const house = await User.find({ name: req.body.name }).exec();

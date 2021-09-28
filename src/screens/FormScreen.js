@@ -253,7 +253,7 @@ const FormScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      let request = await fetch("http://192.168.1.55:3000/create", {
+      let request = await fetch("http://192.168.3.133:3000/create", {
         method: "POST",
         body: JSON.stringify({ ...data }),
         headers: {

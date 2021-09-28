@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 import { images, COLORS, SIZES, FONTS } from '../constants/index';
+import { TextInput } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Searchbar } from "react-native-paper";
 import CheckData from '../components/Confirm'
 
 const { width } = Dimensions.get('screen');
@@ -11,6 +15,8 @@ const ViewDataScreen = ({ navigation }) => {
     const [value, setvalue] = useState([]);
     const [visible, setVisible] = useState(false);
     const [item, setItem] = useState('');
+    const [key, setKey] = useState('');
+    const [searchedValue, setSearchedValue] = useState([]);
 
 
     const showDialog = (e) => {
@@ -21,18 +27,41 @@ const ViewDataScreen = ({ navigation }) => {
     console.log(item);
 
     const fectData = async () => {
-        let request = await fetch("http://192.168.1.55:3000/get");
+        let request = await fetch("http://192.168.3.133:3000/get");
         let response = await request.json();
         setvalue(response);
     }
 
     const handleDelete = async () => {
-        await fetch(`http://192.168.1.55:3000/delete/${item._id}`, {
+        await fetch(`http://192.168.3.133:3000/delete/${item._id}`, {
             method: 'DELETE'
         });
         showDialog();
         await fectData();
     }
+
+    const search = async (key) => {
+        let request = await fetch("http://192.168.3.133:3000/search", {
+            method: 'POST',
+            body: JSON.stringify({ propertyType: key }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        let response = await request.json();
+        setvalue(response);
+    }
+    console.log(setvalue);
+    console.log(key);
+
+    useEffect(() => {
+        if(key.length > 0) {
+            search(key)
+        }else{
+            fectData();
+        }
+        
+    }, [key])
 
     useEffect(() => {
         fectData();
@@ -45,6 +74,17 @@ const ViewDataScreen = ({ navigation }) => {
     return (
         <View style={{ flex: 1 }}>
             <Text style={styles.header}>View Data</Text>
+            <Searchbar
+                placeholder="Search property type"
+                value={key}
+                onSubmitEditing={() => {
+                    search(key);
+                }}
+                onChangeText={(text) => {
+                    setKey(text);
+                }}
+                style={styles.input}
+            />
             <FlatList
                 data={value}
                 renderItem={({ item, index }) => (
@@ -198,6 +238,12 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: 'bold',
         fontSize: 18
+    },
+    input:{
+        width: '92%',
+        marginLeft: 15,
+        marginBottom: 20,
+        borderRadius: 10
     }
 
 });
