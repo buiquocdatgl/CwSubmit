@@ -109,6 +109,26 @@ app.post("/checkName", async (req, res) => {
   res.json(house);
 })
 
+app.put("/update/:id", async (req, res) =>{
+  const {id} = req.params;
+  const {newNote} = req.body;
+  try{
+    const checkNote = await User.findById(id);
+    if(!checkNote){
+      return res.status(404).send("Can not find!!!");
+    }
+    else{
+      checkNote.notes=newNote
+      await checkNote.save();
+      res.status(200).send({err:0})
+      console.log(result);
+    }
+  }
+  catch(e){
+    res.status(400).send("Networking Error!!!");
+  }
+})
+
 
 app.listen(PORT, () => {
   console.log(`running on port: ${PORT}`);

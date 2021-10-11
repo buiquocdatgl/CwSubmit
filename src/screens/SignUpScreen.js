@@ -33,7 +33,7 @@ const SignUpScreen = ({ navigation }) => {
                 <LottieView
                     source={require('../assets/images/splash.json')}
                     autoPlay
-                    loop={true}
+                    loop={false}
                     speed={0.5}
                 />
             </View>

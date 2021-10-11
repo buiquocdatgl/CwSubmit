@@ -196,11 +196,10 @@ const FormScreen = ({ navigation }) => {
         }
         break;
       case "notes":
-        if (value.length > 10) {
+        if (value.length > 20) {
           setErrors({ ...errors, [name]: 'Note not be 100 characters long!' })
         }
         else {
-
           setErrors({ ...errors, [name]: '' })
           setData({ ...data, [name]: value });
         }
@@ -223,7 +222,7 @@ const FormScreen = ({ navigation }) => {
         else {
           setErrors({ ...errors, [name]: '' })
           setData({ ...data, [name]: value });
-        
+
           // fetch ("http://192.168.1.55:3000/checkName", {
           //   method: 'POST',
           //   body: JSON.stringify({ name: value }),
@@ -253,7 +252,7 @@ const FormScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      let request = await fetch("http://192.168.3.133:3000/create", {
+      let request = await fetch("http://172.20.10.5:3000/create", {
         method: "POST",
         body: JSON.stringify({ ...data }),
         headers: {
@@ -262,7 +261,7 @@ const FormScreen = ({ navigation }) => {
       });
       let response = await request.json();
       showDialog();
-      if(response?.error){
+      if (response?.error) {
         return Alert.alert('Name is Duplicated. Back to Edit!!!');
       }
       setData({
@@ -411,8 +410,7 @@ const FormScreen = ({ navigation }) => {
               data={dataFur}
               value={data.furnitureType}
               changeValue={handleChange}
-              name="furnitureType"
-
+              name="furnitureType"  
             />
 
             {/* Note */}
@@ -432,10 +430,12 @@ const FormScreen = ({ navigation }) => {
                 style={styles.textInput}
                 autoCapitalize="none"
                 value={data.notes}
+                multiline={true}
+                numberOfLines={0}
                 onChangeText={(value) => handleChange("notes", value)}
               />
               {
-                (data.notes.length) > 0 && (data.notes.length) < 10 ?
+                (data.notes.length) > 0 && (data.notes.length) < 20 ?
                   <Animatable.View
                     animation="bounceIn"
 
@@ -452,7 +452,6 @@ const FormScreen = ({ navigation }) => {
               <Animatable.View animation="fadeInLeft" duration={500}>
                 <Text style={styles.errorMess}>{errors.notes}</Text>
               </Animatable.View>
-
             )}
 
             {/* ReporterName */}
@@ -553,17 +552,11 @@ const FormScreen = ({ navigation }) => {
               >
                 <Text style={styles.textSign}>Submit</Text>
               </TouchableOpacity>
-
-              {/* <TouchableOpacity
-                style={styles.pick}
-              >
-                <Text style={styles.textSign}>Pick Image</Text>
-              </TouchableOpacity> */}
             </View>
-            <CheckData 
-              bag={bag} 
-              visible={visible} 
-              handleSubmit={handleSubmit} 
+            <CheckData
+              bag={bag}
+              visible={visible}
+              handleSubmit={handleSubmit}
               setVisible={setVisible} />
           </ScrollView>
         </KeyboardAvoidingView>
@@ -623,6 +616,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     color: '#05375a',
+    maxHeight: 100
   },
   button: {
     alignItems: 'center',

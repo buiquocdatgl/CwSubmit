@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -34,6 +34,7 @@ const HomeScreen = ({ navigation }) => {
     const categoryList = ['Popular', 'Recommended', 'Nearest'];
     const scrollX = React.useRef(new Animated.Value(0)).current;
     const [activeCardIndex, setActiveCardIndex] = React.useState(0);
+
     const ListCategories = () => {
         const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
         return (
@@ -89,7 +90,22 @@ const HomeScreen = ({ navigation }) => {
         )
     };
 
+    const [value, setvalue] = useState([]);
+    const fectData = async () => {
+        let request = await fetch("http://172.20.10.5:3000/get");
+        let response = await request.json();
+        setvalue(response);
+    }
+    
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fectData();
+        });
+        return unsubscribe;
+      }, [navigation]);
+
     const Card = ({ hotel, index }) => {
+      
         const inputRange = [
             (index - 1) * cardWidth,
             index * cardWidth,
@@ -113,10 +129,15 @@ const HomeScreen = ({ navigation }) => {
                     <View style={styles.priceTag}>
                         <Text
                             style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>
-                            ${hotel.price}
+                            ${hotel.monthlyRentPrice}
                         </Text>
                     </View>
-                    <Image source={hotel.image} style={styles.cardImage} />
+                    <Image
+                        source={{
+                            uri: hotel.image
+                        }}
+                        style={styles.cardImage}
+                    />
                     <View style={styles.cardDetails}>
                         <View
                             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -125,7 +146,7 @@ const HomeScreen = ({ navigation }) => {
                                     {hotel.name}
                                 </Text>
                                 <Text style={{ color: COLORS.grey, fontSize: 12 }}>
-                                    {hotel.location}
+                                    {hotel.notes}
                                 </Text>
                             </View>
                             <Icon name="bookmark-border" size={26} color={COLORS.search} />
@@ -190,39 +211,6 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-            <LinearGradient
-                colors={["rgba(246, 150, 170, 0.2)", "transparent"]}
-                style={{
-                    left: 0,
-                    right: 0,
-                    height: 90,
-                    marginTop: -45
-                }}
-            >
-                <View style={{
-                    backgroundColor: "#FFF",
-                    paddingVertical: 8,
-                    paddingHorizontal: 20,
-                    marginHorizontal: 20,
-                    borderRadius: 15,
-                    marginTop: 25,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                }}>
-                    <TextInput
-                        placeholder="Search"
-                        placeholderTextColor="#F291A3"
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 18,
-                            width: 260
-                        }}
-                    />
-                    <Icon name="search" size={25} color={COLORS.search} />
-                </View>
-            </LinearGradient>
-
 
             {/* Render list options */}
             <ScrollView>
@@ -230,7 +218,8 @@ const HomeScreen = ({ navigation }) => {
                     flexDirection: "row",
                     paddingHorizontal: 20,
                     width: "100%",
-                    alignItems: "center"
+                    alignItems: "center",
+                    marginTop: 20
                 }}>
                     <View style={{ width: "50%" }}>
                         <Text style={{
@@ -240,14 +229,14 @@ const HomeScreen = ({ navigation }) => {
                         }}>Recommended</Text>
                     </View>
                     <View style={{ width: "50%", alignItems: "flex-end" }}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={{
                                 backgroundColor: "#F291A3",
                                 paddingHorizontal: 20,
                                 paddingVertical: 5,
                                 borderRadius: 15
                             }}
-                            onPress ={() => navigation.navigate("View")}
+                            onPress={() => navigation.navigate("View")}
                         >
                             <Text style={{
                                 fontWeight: "bold",
@@ -271,7 +260,7 @@ const HomeScreen = ({ navigation }) => {
                             { useNativeDriver: true },
                         )}
                         horizontal
-                        data={hotels}
+                        data={value}
                         contentContainerStyle={{
                             paddingVertical: SIZES.padding * 2,
                             paddingBottom: 30,
@@ -279,7 +268,7 @@ const HomeScreen = ({ navigation }) => {
                             paddingRight: cardWidth / 2 - 40,
                         }}
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) => <Card hotel={item} index={index} />}
+                        renderItem={({ item, index }) => <Card hotel={item} index={index} key={item._id} />}
                         snapToInterval={cardWidth}
                     />
                 </View>

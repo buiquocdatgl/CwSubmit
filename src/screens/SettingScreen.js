@@ -1,14 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, Text, Image, Dimensions, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { images, COLORS, SIZES, FONTS } from '../constants/index';
-import { TextInput } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Searchbar } from "react-native-paper";
 import CheckData from '../components/Confirm'
-
+import Dialog from 'react-native-dialog';
 const { width } = Dimensions.get('screen');
 const cardWidth = width / 1.8;
+
+
+const CheckUpdate = ({ setVisible, handleSubmit, notes, show, setNote, item }) => {
+    const handleExists = () => {
+        setVisible(false);
+    }
+    console.log(notes);
+    return (
+        <Dialog.Container visible={show}>
+            <Dialog.Title>Update Note</Dialog.Title>
+            <Dialog.Description>
+                <TextInput
+                    defaultValue={notes}
+                    onChangeText={(value) => setNote(value)}
+                />
+            </Dialog.Description>
+            <Dialog.Button label="Back To Edit" onPress={handleExists} />
+            <Dialog.Button label="Confirm" onPress={()=>handleSubmit(item)} />
+        </Dialog.Container>
+    );
+}
 
 const ViewDataScreen = ({ navigation }) => {
 
@@ -16,32 +36,41 @@ const ViewDataScreen = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
     const [item, setItem] = useState('');
     const [key, setKey] = useState('');
-    const [searchedValue, setSearchedValue] = useState([]);
-
+    const [note, setNote] = useState({});
+    const [show, setShow] = useState(false);
+    const [editItem, setEditItem] = useState({});
 
     const showDialog = (e) => {
         setVisible(!visible);
         setItem(e)
     };
 
-    console.log(item);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fectData();
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const fectData = async () => {
-        let request = await fetch("http://192.168.3.133:3000/get");
+        let request = await fetch("http://172.20.10.5:3000/get");
         let response = await request.json();
         setvalue(response);
     }
 
+    console.log(item);
+
     const handleDelete = async () => {
-        await fetch(`http://192.168.3.133:3000/delete/${item._id}`, {
+        await fetch(`http://172.20.10.5:3000/delete/${item._id}`, {
             method: 'DELETE'
         });
         showDialog();
         await fectData();
     }
 
+
     const search = async (key) => {
-        let request = await fetch("http://192.168.3.133:3000/search", {
+        let request = await fetch("http://172.20.10.5:3000/search", {
             method: 'POST',
             body: JSON.stringify({ propertyType: key }),
             headers: {
@@ -55,21 +84,27 @@ const ViewDataScreen = ({ navigation }) => {
     console.log(key);
 
     useEffect(() => {
-        if(key.length > 0) {
+        if (key.length > 0) {
             search(key)
-        }else{
+        } else {
             fectData();
         }
-        
+
     }, [key])
 
-    useEffect(() => {
-        fectData();
-    }, [])
+    const update = async (item) => {
+        await fetch(`http://172.20.10.5:3000/update/${item._id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ newNote: note })
+        })
+    }
 
-    // useEffect(() => {
-    //     console.log(value)
-    // }, [value])
+
+    const showModal = (item) => {
+        setEditItem(item)
+        setNote(item.notes)
+        setShow(!show);
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -98,50 +133,13 @@ const ViewDataScreen = ({ navigation }) => {
                                 Delete
                             </Text>
                         </TouchableOpacity>
-                        <Image
-                            source={{
-                                uri: item.image
-                            }}
-                            style={{
-                                height: 200,
-                                width: '100%',
-                                borderTopLeftRadius: 15,
-                                borderTopRightRadius: 15,
-                            }}
-                        />
-
-                        <View style={styles.cardDetails}>
-                            <Text style={styles.text}>ID: {item._id}</Text>
-                            <Text style={styles.text}>PropertyType: {item.propertyType}</Text>
-                            <Text style={styles.text}>BedRome: {item.bedRoom}</Text>
-                            <Text style={styles.text}>Date: {item.addingDate}</Text>
-                            <Text style={styles.text}>MoneyRent: {item.monthlyRentPrice}</Text>
-                            <Text style={styles.text}>FurnitureType: {item.furnitureType}</Text>
-                            <Text style={styles.text}>Notes: {item.notes}</Text>
-                            <Text style={styles.text}>ReportName: {item.reporterName}</Text>
-                            <Text style={styles.text}>Name: {item.name}</Text>
-                        </View>
-
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            />
-            <CheckData
-                bag="Do you want to Delelte"
-                visible={visible}
-                handleSubmit={handleDelete}
-                setVisible={setVisible}
-            />
-            {/* {
-                value.map((item, index) => (
-                    <View style={{ ...styles.card }} key={index}>
                         <TouchableOpacity
-                            style={styles.priceTag}
-                            onPress={showDialog}
+                            style={styles.priceTag1}
+                            onPress={() => showModal(item)}
                         >
                             <Text
                                 style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>
-                                Delete
+                                Update
                             </Text>
                         </TouchableOpacity>
                         <Image
@@ -167,15 +165,26 @@ const ViewDataScreen = ({ navigation }) => {
                             <Text style={styles.text}>ReportName: {item.reporterName}</Text>
                             <Text style={styles.text}>Name: {item.name}</Text>
                         </View>
-                        <CheckData
-                            bag="Do you want to Delelte"
-                            visible={visible}
-                            handleSubmit={() => handleDelete(item._id)}
-                            showDialog={showDialog} />
+
                     </View>
 
-                ))
-            } */}
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            <CheckData
+                bag="Do you want to Delelte"
+                visible={visible}
+                handleSubmit={handleDelete}
+                setVisible={setVisible}
+            />
+            <CheckUpdate
+                show={show}
+                handleSubmit={update}
+                setVisible={setShow}
+                notes={note}
+                item={editItem}
+                setNote={setNote}
+            />
         </View>
     );
 };
@@ -200,6 +209,13 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingLeft: 20,
         width: '100%',
+    },
+    textInput: {
+        flex: 1,
+        paddingLeft: 10,
+        color: '#05375a',
+        maxHeight: 100,
+        backgroundColor: 'red'
     },
     // card: {
     //     flex: 1,
@@ -235,11 +251,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    priceTag1: {
+        height: 60,
+        width: 80,
+        backgroundColor: COLORS.search,
+        position: 'absolute',
+        zIndex: 1,
+        left: 0,
+        borderTopLeftRadius: 15,
+        borderBottomRightRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     text: {
         fontWeight: 'bold',
         fontSize: 18
     },
-    input:{
+    input: {
         width: '92%',
         marginLeft: 15,
         marginBottom: 20,
