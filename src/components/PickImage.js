@@ -5,7 +5,7 @@ import firebase from "../../firebase/fire";
 import { ActivityIndicator } from 'react-native-paper';
 
 
-const PickImage = ({ data, setData }) => {
+const PickImage = ({ data, setData, navigation }) => {
 
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
@@ -22,6 +22,13 @@ const PickImage = ({ data, setData }) => {
         })();
         // return () => setImage('');
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setImage(null);
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({

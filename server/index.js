@@ -96,7 +96,7 @@ app.post("/search", async (req, res) => {
     const users = await User.find({ propertyType: req.body.propertyType }).exec();
     console.log(users);
     res.json(users);
-  } 
+  }
   catch (err) {
     res.status(404).send("Can Not Found");
   }
@@ -109,22 +109,17 @@ app.post("/checkName", async (req, res) => {
   res.json(house);
 })
 
-app.put("/update/:id", async (req, res) =>{
-  const {id} = req.params;
-  const {newNote} = req.body;
-  try{
+app.put("/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const { newNote } = req.body;
+  try {
+    console.log(newNote);
     const checkNote = await User.findById(id);
-    if(!checkNote){
-      return res.status(404).send("Can not find!!!");
-    }
-    else{
-      checkNote.notes=newNote
-      await checkNote.save();
-      res.status(200).send({err:0})
-      console.log(result);
-    }
+    checkNote.notes = newNote
+    await checkNote.save();
+    res.status(200).json({ message : "success" });
   }
-  catch(e){
+  catch (e) {
     res.status(400).send("Networking Error!!!");
   }
 })

@@ -6,26 +6,32 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Searchbar } from "react-native-paper";
 import CheckData from '../components/Confirm'
 import Dialog from 'react-native-dialog';
+import { Alert } from 'react-native';
 const { width } = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 
 
-const CheckUpdate = ({ setVisible, handleSubmit, notes, show, setNote, item }) => {
+const CheckUpdate = ({ setVisible, handleSubmit, show, item, hideModal }) => {
+    const { notes } = item
+    const [note, setNote] = useState(notes || '');
     const handleExists = () => {
         setVisible(false);
     }
-    console.log(notes);
+    console.log(note);
+    console.log(item);
+    useEffect(()=>{
+        setNote(notes || '')
+    }, [])
+    
     return (
         <Dialog.Container visible={show}>
-            <Dialog.Title>Update Note</Dialog.Title>
-            <Dialog.Description>
-                <TextInput
-                    defaultValue={notes}
-                    onChangeText={(value) => setNote(value)}
-                />
-            </Dialog.Description>
-            <Dialog.Button label="Back To Edit" onPress={handleExists} />
-            <Dialog.Button label="Confirm" onPress={()=>handleSubmit(item)} />
+            <TextInput
+                style={styles.textInput}
+                value={note}
+                onChangeText={(value) => setNote(value)}
+            />
+            <Dialog.Button label="Back To Edit" onPress={hideModal} />
+            <Dialog.Button label="Confirm" onPress={() => handleSubmit(item, note)} />
         </Dialog.Container>
     );
 }
@@ -36,7 +42,6 @@ const ViewDataScreen = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
     const [item, setItem] = useState('');
     const [key, setKey] = useState('');
-    const [note, setNote] = useState({});
     const [show, setShow] = useState(false);
     const [editItem, setEditItem] = useState({});
 
@@ -92,17 +97,32 @@ const ViewDataScreen = ({ navigation }) => {
 
     }, [key])
 
-    const update = async (item) => {
-        await fetch(`http://172.20.10.5:3000/update/${item._id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ newNote: note })
-        })
+    const update = async (item, note) => {
+        try {
+            const request = await fetch(`http://172.20.10.5:3000/update/${item._id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ newNote: note }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            const response = await request.json();
+            Alert.alert(response.message);
+            await fectData();
+            setShow(false);
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
 
+    const hideMode = ()=>{
+        setEditItem({});
+        setShow(false);
+    }
 
     const showModal = (item) => {
         setEditItem(item)
-        setNote(item.notes)
         setShow(!show);
     };
 
@@ -181,9 +201,8 @@ const ViewDataScreen = ({ navigation }) => {
                 show={show}
                 handleSubmit={update}
                 setVisible={setShow}
-                notes={note}
                 item={editItem}
-                setNote={setNote}
+                hideModal={hideMode}
             />
         </View>
     );
@@ -211,11 +230,8 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     textInput: {
-        flex: 1,
-        paddingLeft: 10,
-        color: '#05375a',
-        maxHeight: 100,
-        backgroundColor: 'red'
+        borderBottomWidth: 0.4,
+        borderBottomColor: 'gray',
     },
     // card: {
     //     flex: 1,
@@ -229,6 +245,7 @@ const styles = StyleSheet.create({
     //     marginTop: 10,
     //     borderRadius: 15
     // },
+
     card: {
         height: 400,
         width: 382,

@@ -539,6 +539,7 @@ const FormScreen = ({ navigation }) => {
               setData={setData}
             // setUploading={setUploading}
             // uploading={uploading}
+              navigation={navigation}
             />
 
             <View style={[styles.titleContainer1, {
