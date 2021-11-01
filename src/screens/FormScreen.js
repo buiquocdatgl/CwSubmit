@@ -21,7 +21,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DropDown from '../components/DropDown';
 import PickImage from '../components/PickImage';
 import { ActivityIndicator } from 'react-native-paper';
-import CheckData from '../components/Confirm'
+import CheckData from '../components/Confirm';
+import { TextInputMask } from 'react-native-masked-text'
 
 const { width, height } = Dimensions.get("window");
 
@@ -182,14 +183,6 @@ const FormScreen = ({ navigation }) => {
           setErrors({ ...errors, [name]: 'Monthly Rent Price is required' })
           setData({ ...data, [name]: null });
         }
-        else if (parseInt(value) < 0) {
-          setErrors({ ...errors, [name]: 'The price have to be larger 0' })
-          setData({ ...data, [name]: value });
-        }
-        else if (isNaN(value)) {
-          setErrors({ ...errors, [name]: 'The price have to be a number' })
-          setData({ ...data, [name]: value });
-        }
         else {
           setErrors({ ...errors, [name]: '' })
           setData({ ...data, [name]: value });
@@ -197,7 +190,7 @@ const FormScreen = ({ navigation }) => {
         break;
       case "notes":
         if (value.length > 20) {
-          setErrors({ ...errors, [name]: 'Note not be 100 characters long!' })
+          setErrors({ ...errors, [name]: 'Note not be 20 characters long!' })
         }
         else {
           setErrors({ ...errors, [name]: '' })
@@ -252,7 +245,7 @@ const FormScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      let request = await fetch("http://172.20.10.5:3000/create", {
+      let request = await fetch("http://192.168.1.71:3000/create", {
         method: "POST",
         body: JSON.stringify({ ...data }),
         headers: {
@@ -381,22 +374,21 @@ const FormScreen = ({ navigation }) => {
                     size={20}
                   />
                 </View>
-                <Text style={styles.text_footer}>MonthlyRentPrice</Text>
               </View>
-
-              <View style={styles.action}>
-                <TextInput
-                  placeholder="0.00"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                  value={data.monthlyRentPrice}
-                  onChangeText={(value) => handleChange("monthlyRentPrice", value)}
-
-                />
-              </View>
+              <TextInputMask
+                type={'money'}
+                options={{
+                  precision: 2,
+                  separator: ',',
+                  delimiter: '.',
+                  unit: '$',
+                  suffixUnit: ''
+                }}
+                value={data.monthlyRentPrice}
+                onChangeText={(value) => handleChange("monthlyRentPrice", value)}
+                keyboardType="numeric"
+              />
             </View>
-
             {errors.monthlyRentPrice.length > 0 && (
               <Animatable.View animation="fadeInLeft" duration={500}>
                 <Text style={styles.errorMess}>{errors.monthlyRentPrice}</Text>
@@ -410,7 +402,7 @@ const FormScreen = ({ navigation }) => {
               data={dataFur}
               value={data.furnitureType}
               changeValue={handleChange}
-              name="furnitureType"  
+              name="furnitureType"
             />
 
             {/* Note */}
@@ -537,8 +529,8 @@ const FormScreen = ({ navigation }) => {
             <PickImage
               data={data}
               setData={setData}
-            // setUploading={setUploading}
-            // uploading={uploading}
+              // setUploading={setUploading}
+              // uploading={uploading}
               navigation={navigation}
             />
 

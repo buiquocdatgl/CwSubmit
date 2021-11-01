@@ -92,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
 
     const [value, setvalue] = useState([]);
     const fectData = async () => {
-        let request = await fetch("http://172.20.10.5:3000/get");
+        let request = await fetch("http://192.168.1.71:3000/get");
         let response = await request.json();
         setvalue(response);
     }
@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
                     <View style={styles.priceTag}>
                         <Text
                             style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>
-                            ${hotel.monthlyRentPrice}
+                            {hotel.monthlyRentPrice}
                         </Text>
                     </View>
                     <Image

@@ -11,27 +11,21 @@ const { width } = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 
 
-const CheckUpdate = ({ setVisible, handleSubmit, show, item, hideModal }) => {
-    const { notes } = item
-    const [note, setNote] = useState(notes || '');
+const CheckUpdate = ({ setVisible, handleSubmit, show, hideModal, setNote, note }) => {
+    // const { notes } = item
     const handleExists = () => {
         setVisible(false);
     }
-    console.log(note);
-    console.log(item);
-    useEffect(()=>{
-        setNote(notes || '')
-    }, [])
     
     return (
         <Dialog.Container visible={show}>
             <TextInput
                 style={styles.textInput}
                 value={note}
-                onChangeText={(value) => setNote(value)}
+                onChangeText={ setNote }
             />
             <Dialog.Button label="Back To Edit" onPress={hideModal} />
-            <Dialog.Button label="Confirm" onPress={() => handleSubmit(item, note)} />
+            <Dialog.Button label="Confirm" onPress={handleSubmit} />
         </Dialog.Container>
     );
 }
@@ -43,7 +37,8 @@ const ViewDataScreen = ({ navigation }) => {
     const [item, setItem] = useState('');
     const [key, setKey] = useState('');
     const [show, setShow] = useState(false);
-    const [editItem, setEditItem] = useState({});
+    const [editItem, setEditItem] = useState({id: '', notes: ''});
+    // const [note, setNote] = useState();
 
     const showDialog = (e) => {
         setVisible(!visible);
@@ -58,7 +53,7 @@ const ViewDataScreen = ({ navigation }) => {
     }, [navigation]);
 
     const fectData = async () => {
-        let request = await fetch("http://172.20.10.5:3000/get");
+        let request = await fetch("http://192.168.1.71:3000/get");
         let response = await request.json();
         setvalue(response);
     }
@@ -66,7 +61,7 @@ const ViewDataScreen = ({ navigation }) => {
     console.log(item);
 
     const handleDelete = async () => {
-        await fetch(`http://172.20.10.5:3000/delete/${item._id}`, {
+        await fetch(`http://192.168.1.71:3000/delete/${item._id}`, {
             method: 'DELETE'
         });
         showDialog();
@@ -75,7 +70,7 @@ const ViewDataScreen = ({ navigation }) => {
 
 
     const search = async (key) => {
-        let request = await fetch("http://172.20.10.5:3000/search", {
+        let request = await fetch("http://192.168.1.71:3000/search", {
             method: 'POST',
             body: JSON.stringify({ propertyType: key }),
             headers: {
@@ -97,11 +92,11 @@ const ViewDataScreen = ({ navigation }) => {
 
     }, [key])
 
-    const update = async (item, note) => {
+    const update = async () => {
         try {
-            const request = await fetch(`http://172.20.10.5:3000/update/${item._id}`, {
+            const request = await fetch(`http://192.168.1.71:3000/update/${editItem.id}`, {
                 method: 'PUT',
-                body: JSON.stringify({ newNote: note }),
+                body: JSON.stringify({ newNote: editItem.notes }),
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -122,8 +117,9 @@ const ViewDataScreen = ({ navigation }) => {
     }
 
     const showModal = (item) => {
-        setEditItem(item)
+        setEditItem({...editItem, id : item._id, notes:item.notes});
         setShow(!show);
+        console.log(JSON.stringify(item));
     };
 
     return (
@@ -201,8 +197,9 @@ const ViewDataScreen = ({ navigation }) => {
                 show={show}
                 handleSubmit={update}
                 setVisible={setShow}
-                item={editItem}
+                note = {editItem.notes}
                 hideModal={hideMode}
+                setNote = {(value)=>setEditItem({...editItem, notes: value})}
             />
         </View>
     );
